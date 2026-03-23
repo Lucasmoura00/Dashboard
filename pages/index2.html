@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard Geral</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body class="dashboard-body">
+  <div class="dashboard-shell">
+    <header class="dashboard-header">
+      <div>
+        <span class="hero-badge">Painel em tempo real</span>
+        <h1>Dashboard</h1>
+        <p>Acompanhe producao por hora, tendencia do dia e consolidado por operacao.</p>
+      </div>
+
+      <div class="dashboard-actions">
+        <nav class="view-switch" aria-label="Navegacao entre dashboards">
+          <a class="nav-link active" href="index2.html">Unidade Padrão</a>
+          <a class="nav-link" href="index3.html">Unidade Especial</a>
+        </nav>
+        <label class="date-card" for="data">
+          <span>Data</span>
+          <input id="data" type="date" />
+        </label>
+        <a class="secondary-action" href="index.html">Sair</a>
+      </div>
+    </header>
+
+    <main class="dashboard-grid">
+      <section class="panel-card">
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow">Resumo por célula</span>
+            <h2>Produção do dia</h2>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="dashboard-table">
+            <thead>
+              <tr>
+                <th>Célula</th>
+                <th>1h</th>
+                <th>2h</th>
+                <th>3h</th>
+                <th>4h</th>
+                <th>5h</th>
+                <th>6h</th>
+                <th>7h</th>
+                <th>8h</th>
+                <th>9h</th>
+                <th>Extra</th>
+                <th>Total</th>
+                <th>Tendencia</th>
+                <th>Capacidade</th>
+                <th>Desvio</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+            <tfoot>
+              <tr id="total-geral"></tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel-card">
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow">Ops consolidadas</span>
+            <h2>Volume por op
+            </h2>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="dashboard-table compact" id="ops">
+            <thead>
+              <tr>
+                <th>Cod. Cliente</th>
+                <th>OP</th>
+                <th>Planejado</th>
+                <th>Produzido</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/script.js"></script>
+</body>
+</html>

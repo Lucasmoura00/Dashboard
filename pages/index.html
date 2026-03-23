@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+  <div class="page-shell">
+    <div class="ambient ambient-left"></div>
+    <div class="ambient ambient-right"></div>
+
+    <main class="login-layout">
+      <section class="hero-panel">
+        <span class="hero-badge">Dashboard</span>
+        <h1>Tenha acesso ao dashboard.</h1>
+        <p class="hero-copy">
+          O visual agora usa cards, profundidade, brilho de fundo e transicoes suaves para deixar a experiencia mais elegante.
+        </p>
+
+       
+      </section>
+
+      <section class="login-card">
+        <div class="login-card__top">
+          <span class="eyebrow">Acesso seguro</span>
+          <h2>Entrar</h2>
+          <p>Use seu usuario e senha para abrir o dashboard.</p>
+        </div>
+
+        <div class="field">
+          <label for="usuario">Usuario</label>
+          <input id="usuario" type="text" placeholder="Digite seu login" autocomplete="username" />
+        </div>
+
+        <div class="field">
+          <label for="senha">Senha</label>
+          <input id="senha" type="password" placeholder="Digite sua senha" autocomplete="current-password" />
+        </div>
+
+        <button id="btnEntrar">Entrar no painel</button>
+        <p id="msg" class="msg" aria-live="polite"></p>
+
+>
+
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      databaseURL: "https://gwcontas-3251a-default-rtdb.firebaseio.com/"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    const usuarioEl = document.getElementById("usuario");
+    const senhaEl = document.getElementById("senha");
+    const msgEl = document.getElementById("msg");
+    const btnEntrar = document.getElementById("btnEntrar");
+
+    function setMsg(texto, tipo = "erro") {
+      msgEl.textContent = texto;
+      msgEl.className = "msg " + (tipo === "ok" ? "ok" : "erro");
+    }
+
+    async function fazerLogin() {
+      const usuario = (usuarioEl.value || "").trim();
+      const senhaDigitada = (senhaEl.value || "").trim();
+
+      if (!usuario || !senhaDigitada) {
+        setMsg("Preencha usuario e senha.");
+        return;
+      }
+
+      btnEntrar.disabled = true;
+      btnEntrar.textContent = "Entrando...";
+
+      try {
+        const ref = firebase.database().ref(`usuarios/${usuario}/senha`);
+        const snap = await ref.once("value");
+
+        if (!snap.exists()) {
+          setMsg("Usuario nao encontrado.");
+          return;
+        }
+
+        const senhaDoBanco = String(snap.val() ?? "");
+
+        if (senhaDigitada === senhaDoBanco) {
+          setMsg("Login aprovado! Redirecionando...", "ok");
+          localStorage.setItem("usuarioLogado", usuario);
+          window.location.href = "index2.html";
+        } else {
+          setMsg("Senha incorreta.");
+        }
+      } catch (e) {
+        console.error(e);
+        setMsg("Erro ao conectar no Firebase. Verifique regras e permissoes.");
+      } finally {
+        btnEntrar.disabled = false;
+        btnEntrar.textContent = "Entrar no painel";
+      }
+    }
+
+    btnEntrar.addEventListener("click", fazerLogin);
+    senhaEl.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter") fazerLogin();
+    });
+    usuarioEl.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter") fazerLogin();
+    });
+  </script>
+</body>
+</html>
